@@ -39,7 +39,7 @@ endef
 DEPENDS_ssr-local = +libpcre
 DEPENDS_ssr-server = +libcares +libpcre
 
-SHADOWSOCKSR_COMPONENTS:=local redir server
+SHADOWSOCKSR_COMPONENTS:=local redir check server
 define shadowsocksr-libev/templates
   $(foreach component,$(SHADOWSOCKSR_COMPONENTS),
     $(call Package/shadowsocksr-libev/Default,$(component))
