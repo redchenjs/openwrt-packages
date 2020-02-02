@@ -27,7 +27,7 @@ define Package/shadowsocksr-libev/Default
 	SUBMENU:=Web Servers/Proxies
 	TITLE:=shadowsocksr-libev ssr-$(1)
 	URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
-	DEPENDS:=+libev +libmbedtls +libpthread +libsodium +shadowsocks-libev-config $(DEPENDS_ssr-$(1))
+	DEPENDS:=+libev +libmbedtls +libpthread +libsodium $(DEPENDS_ssr-$(1))
   endef
 
   define Package/shadowsocksr-libev-ssr-$(1)/install
