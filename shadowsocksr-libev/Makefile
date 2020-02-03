@@ -22,19 +22,19 @@ PKG_USE_MIPS16:=0
 include $(INCLUDE_DIR)/package.mk
 
 define Package/shadowsocksr-libev/Default
-	define Package/shadowsocksr-libev-ssr-$(1)
-		SECTION:=net
-		CATEGORY:=Network
-		SUBMENU:=Web Servers/Proxies
-		TITLE:=shadowsocksr-libev ssr-$(1)
-		URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
-		DEPENDS:=+libev +libopenssl +libpthread +libpcre
-	endef
+  define Package/shadowsocksr-libev-ssr-$(1)
+	SECTION:=net
+	CATEGORY:=Network
+	SUBMENU:=Web Servers/Proxies
+	TITLE:=shadowsocksr-libev ssr-$(1)
+	URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
+	DEPENDS:=+libev +libopenssl +libpthread +libpcre
+  endef
 
-	define Package/shadowsocksr-libev-ssr-$(1)/install
-		$$(INSTALL_DIR) $$(1)/usr/bin
-		$$(INSTALL_BIN) $$(PKG_INSTALL_DIR)/usr/bin/ss-$(1) $$(1)/usr/bin/ssr-$(1)
-	endef
+  define Package/shadowsocksr-libev-ssr-$(1)/install
+	$$(INSTALL_DIR) $$(1)/usr/bin
+	$$(INSTALL_BIN) $$(PKG_INSTALL_DIR)/usr/bin/ss-$(1) $$(1)/usr/bin/ssr-$(1)
+  endef
 endef
 
 SHADOWSOCKSR_COMPONENTS:=local redir
