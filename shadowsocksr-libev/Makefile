@@ -3,7 +3,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=shadowsocksr-libev
 PKG_RELEASE:=1
 
-PKG_LICENSE:=GPL-3.0-or-later
+PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE_URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
@@ -22,26 +22,26 @@ PKG_USE_MIPS16:=0
 include $(INCLUDE_DIR)/package.mk
 
 define Package/shadowsocksr-libev/Default
-  define Package/shadowsocksr-libev-ssr-$(1)
-	SECTION:=net
-	CATEGORY:=Network
-	SUBMENU:=Web Servers/Proxies
-	TITLE:=shadowsocksr-libev ssr-$(1)
-	URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
-	DEPENDS:=+libev +libopenssl +libpthread +libpcre
-  endef
+	define Package/shadowsocksr-libev-ssr-$(1)
+		SECTION:=net
+		CATEGORY:=Network
+		SUBMENU:=Web Servers/Proxies
+		TITLE:=shadowsocksr-libev ssr-$(1)
+		URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
+		DEPENDS:=+libev +libopenssl +libpthread +libpcre
+	endef
 
-  define Package/shadowsocksr-libev-ssr-$(1)/install
-	$$(INSTALL_DIR) $$(1)/usr/bin
-	$$(INSTALL_BIN) $$(PKG_INSTALL_DIR)/usr/bin/ss-$(1) $$(1)/usr/bin/ssr-$(1)
-  endef
+	define Package/shadowsocksr-libev-ssr-$(1)/install
+		$$(INSTALL_DIR) $$(1)/usr/bin
+		$$(INSTALL_BIN) $$(PKG_INSTALL_DIR)/usr/bin/ss-$(1) $$(1)/usr/bin/ssr-$(1)
+	endef
 endef
 
 SHADOWSOCKSR_COMPONENTS:=local redir
 define shadowsocksr-libev/templates
-  $(foreach component,$(SHADOWSOCKSR_COMPONENTS),
-    $(call Package/shadowsocksr-libev/Default,$(component))
-  )
+	$(foreach component,$(SHADOWSOCKSR_COMPONENTS),
+		$(call Package/shadowsocksr-libev/Default,$(component))
+	)
 endef
 $(eval $(call shadowsocksr-libev/templates))
 
@@ -78,6 +78,6 @@ CONFIGURE_ARGS += \
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 $(foreach component,$(SHADOWSOCKSR_COMPONENTS), \
-  $(eval $(call BuildPackage,shadowsocksr-libev-ssr-$(component))) \
+	$(eval $(call BuildPackage,shadowsocksr-libev-ssr-$(component))) \
 )
 $(eval $(call BuildPackage,shadowsocksr-libev-ssr-tunnel))
