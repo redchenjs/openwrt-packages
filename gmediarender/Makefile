@@ -24,12 +24,12 @@ define Package/gmediarender
 	SECTION:=multimedia
 	CATEGORY:=Multimedia
 	TITLE:=Headless UPnP Renderer
-	DEPENDS:=+gstreamer1 +gst1-libav +gstreamer1-plugins-good +glib2 +libupnp
+	DEPENDS:=+gstreamer1 +gst1-libav +gst1-plugins-base +gst1-mod-soup +glib2 +libupnp
 endef
 
 define Package/gmediarender/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gmediarender $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gmediarender $(1)/usr/bin/gmediarender
 	$(INSTALL_DIR) $(1)/usr/share/gmediarender
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/gmediarender/*.png $(1)/usr/share/gmediarender/
 endef

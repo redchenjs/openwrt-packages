@@ -3,7 +3,7 @@ Headless UPnP Renderer
 
 ## GStreamer
 
-Remember to select needed decoders and plugins under `Multimedia` menu.
+Remember to select `gstreamer1-plugins-good` package under `Multimedia` menu.
 
 ## Usage
 
