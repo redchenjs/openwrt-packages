@@ -15,6 +15,7 @@ PKG_MIRROR_HASH:=
 PKG_MAINTAINER:=
 PKG_BUILD_PARALLEL:=1
 
+include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/iptables-mod-fullconenat
