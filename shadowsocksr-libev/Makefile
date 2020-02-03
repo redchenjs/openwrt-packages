@@ -1,22 +1,23 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadowsocksr-libev
-PKG_VERSION:=2.5.6
 PKG_RELEASE:=1
-
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
-PKG_SOURCE_VERSION:=4799b312b8244ec067b8ae9ba4b85c877858976c
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 
+PKG_SOURCE_URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_DATE:=2020-02-03
+PKG_SOURCE_VERSION:=4799b312b8244ec067b8ae9ba4b85c877858976c
+PKG_MIRROR_HASH:=
+
+PKG_MAINTAINER:=
+PKG_BUILD_PARALLEL:=1
+
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
-PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=c-ares pcre
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -27,7 +28,7 @@ define Package/shadowsocksr-libev/Default
 	SUBMENU:=Web Servers/Proxies
 	TITLE:=shadowsocksr-libev ssr-$(1)
 	URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
-	DEPENDS:=+libev +libmbedtls +libpthread +libsodium $(DEPENDS_ssr-$(1))
+	DEPENDS:=+libev +libopenssl +libpthread +libpcre
   endef
 
   define Package/shadowsocksr-libev-ssr-$(1)/install
@@ -36,10 +37,7 @@ define Package/shadowsocksr-libev/Default
   endef
 endef
 
-DEPENDS_ssr-local = +libpcre
-DEPENDS_ssr-server = +libcares +libpcre
-
-SHADOWSOCKSR_COMPONENTS:=local redir check server
+SHADOWSOCKSR_COMPONENTS:=local redir
 define shadowsocksr-libev/templates
   $(foreach component,$(SHADOWSOCKSR_COMPONENTS),
     $(call Package/shadowsocksr-libev/Default,$(component))
@@ -77,7 +75,6 @@ CONFIGURE_ARGS += \
 	--disable-assert \
 	--disable-ssp \
 
-TARGET_CFLAGS += -flto
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 $(foreach component,$(SHADOWSOCKSR_COMPONENTS), \
