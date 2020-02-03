@@ -1,6 +1,3 @@
 [submodule "mt762x-wm8960"]
 	path = mt762x-wm8960
 	url = https://github.com/redchenjs/mt762x-wm8960
-[submodule "fullconenat"]
-	path = fullconenat
-	url = https://github.com/LGA1150/openwrt-fullconenat
