@@ -3,10 +3,10 @@ Headless UPnP Renderer
 
 ## GStreamer
 
-Remember to select `gstreamer1-plugins-good` package under `Multimedia` menu.
+Remember to select the `gstreamer1-plugins-good` package under the `Multimedia` menu.
 
 ## Usage
 
 ```
-gmediarender -d -f $HOSTNAME -I $IP
+gmediarender -d -f "NAME" -I "IP"
 ```
