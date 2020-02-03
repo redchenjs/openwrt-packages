@@ -44,17 +44,17 @@ endef
 include $(INCLUDE_DIR)/kernel-defaults.mk
 
 define Build/Prepare
-  $(call Build/Prepare/Default)
-  $(CP) ./files/Makefile $(PKG_BUILD_DIR)/
+	$(call Build/Prepare/Default)
+	$(CP) ./files/Makefile $(PKG_BUILD_DIR)/
 endef
 
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C "$(LINUX_DIR)" \
-		CROSS_COMPILE="$(TARGET_CROSS)" \
-		ARCH="$(LINUX_KARCH)" \
-		SUBDIRS="$(PKG_BUILD_DIR)" \
-		EXTRA_CFLAGS="$(BUILDFLAGS)" \
-		modules
+        CROSS_COMPILE="$(TARGET_CROSS)" \
+        ARCH="$(LINUX_KARCH)" \
+        SUBDIRS="$(PKG_BUILD_DIR)" \
+        EXTRA_CFLAGS="$(BUILDFLAGS)" \
+        modules
 	$(call Build/Compile/Default)
 endef
 
