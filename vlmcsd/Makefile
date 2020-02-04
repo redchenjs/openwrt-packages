@@ -35,6 +35,8 @@ define Package/vlmcsd/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/vlmcsd.ini $(1)/etc/vlmcsd.ini
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/vlmcsd.kmd $(1)/etc/vlmcsd.kmd
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/vlmcsd.init $(1)/etc/init.d/vlmcsd
 endef
 
 $(eval $(call BuildPackage,vlmcsd))
