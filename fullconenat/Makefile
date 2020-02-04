@@ -30,6 +30,22 @@ endef
 define Package/iptables-mod-fullconenat/install
 	$(INSTALL_DIR) $(1)/usr/lib/iptables
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libipt_FULLCONENAT.so $(1)/usr/lib/iptables
+	$(INSTALL_DIR) $(1)/etc
+	$(INSTALL_DATA) ./files/firewall.fullconenat $(1)/etc
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/fullconenat.init $(1)/etc/init.d/fullconenat
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/fullconenat.defaults $(1)/etc/uci-defaults
+endef
+
+define Package/iptables-mod-fullconenat/prerm
+#!/bin/sh
+s=firewall.fullconenat
+uci get "$$s" >/dev/null || exit 0
+uci batch <<-EOF
+	delete $$s
+	commit firewall
+EOF
 endef
 
 define KernelPackage/ipt-fullconenat

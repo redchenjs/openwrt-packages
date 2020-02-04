@@ -1,0 +1,10 @@
+#!/bin/sh
+
+s=firewall.fullconenat
+uci get "$s" >/dev/null && exit 0
+uci batch <<-EOF
+	set $s=include
+	set $s.path=/etc/firewall.fullconenat
+	set $s.reload=1
+	commit firewall
+EOF
