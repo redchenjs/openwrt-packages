@@ -25,6 +25,7 @@ define Package/netease-musicbox
 	DEPENDS:= \
 	  +mpg123 +aria2 \
 	  +python3-future \
+	  +python3-webbrowser \
 	  +python3-cryptodomex \
 	  +python3-pkg-resources \
 	  +python3-requests-cache
