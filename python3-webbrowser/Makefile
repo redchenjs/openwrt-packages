@@ -1,22 +1,24 @@
 include $(TOPDIR)/rules.mk
 
+PYTHON_DIR:=$(TOPDIR)/feeds/packages/lang/python
+
+include $(PYTHON_DIR)/python3-version.mk
+include $(PYTHON_DIR)/python3-package.mk
+
+PYTHON_VERSION:=$(PYTHON3_VERSION)
+PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
+
 PKG_NAME:=python3-webbrowser
+PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 PKG_RELEASE:=2
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=Python/2.0
 PKG_LICENSE_FILES:=LICENSE
 
-PYTHON_DIR:=$(TOPDIR)/feeds/packages/lang/python
+PKG_BUILD_DEPENDS:=python3
 
 include $(INCLUDE_DIR)/package.mk
-include $(PYTHON_DIR)/python3-version.mk
-include $(PYTHON_DIR)/python3-package.mk
-
-PYTHON_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
-
-PKG_BUILD_DEPENDS:=python3
-PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PYTHON_VERSION)
 
 define Package/python3-webbrowser
 	SUBMENU:=Python
@@ -27,11 +29,15 @@ define Package/python3-webbrowser
 	DEPENDS:=+python3-base
 endef
 
-define Py3Package/python3-webbrowser/filespec
-+|/usr/lib/python$(PYTHON_VERSION)/webbrowser.py
+define Build/Compile
+	$(LN) $(BUILD_DIR)/Python-$(PKG_VERSION)/ipkg-install \
+	      $(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)/ipkg-install
 endef
 
-Py3Package/python3-webbrowser/install:=:
+define Py3Package/python3-webbrowser/filespec
+	-|/usr/bin
+	+|/usr/lib/python$(PYTHON_VERSION)/webbrowser.py
+endef
 
 $(eval $(call Py3Package,python3-webbrowser))
 $(eval $(call BuildPackage,python3-webbrowser))
