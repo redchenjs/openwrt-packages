@@ -25,6 +25,12 @@ define Package/vlmcsd
 	DEPENDS:=+libpthread
 endef
 
+define Package/vlmcsd/prerm
+#!/bin/sh
+sed -i '/# vlmcsd/d' /etc/dnsmasq.conf
+EOF
+endef
+
 MAKE_FLAGS += \
 	-C $(PKG_BUILD_DIR)
 
@@ -37,6 +43,8 @@ define Package/vlmcsd/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/vlmcsd.kmd $(1)/etc/vlmcsd.kmd
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/vlmcsd.init $(1)/etc/init.d/vlmcsd
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/vlmcsd.defaults $(1)/etc/uci-defaults
 endef
 
 $(eval $(call BuildPackage,vlmcsd))

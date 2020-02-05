@@ -1,0 +1,4 @@
+#!/bin/sh
+sed -i '/# vlmcsd/d' /etc/dnsmasq.conf
+echo "srv-host=_vlmcs._tcp,$HOSTNAME,1688  # vlmcsd" >> /etc/dnsmasq.conf
+EOF
