@@ -1,5 +1,4 @@
 #!/bin/sh
-
 s=firewall.fullconenat
 uci get "$s" >/dev/null && exit 0
 uci batch <<-EOF
