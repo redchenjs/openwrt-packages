@@ -1,0 +1,7 @@
+#!/bin/sh
+
+iptables -w -t nat -D zone_wan_postrouting -m comment --comment "!fw3" -j MASQUERADE
+iptables -w -t nat -A zone_wan_prerouting -m comment --comment "!fw3" -j FULLCONENAT
+iptables -w -t nat -A zone_wan_postrouting -m comment --comment "!fw3" -j FULLCONENAT
+
+wait

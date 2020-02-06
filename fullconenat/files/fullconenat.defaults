@@ -1,9 +1,10 @@
 #!/bin/sh
-s=firewall.fullconenat
-uci get "$s" >/dev/null && exit 0
-uci batch <<-EOF
-	set $s=include
-	set $s.path=/etc/firewall.fullconenat
-	set $s.reload=1
+uci -q batch <<-EOF
+	delete firewall.fullconenat
+	set firewall.fullconenat=include
+	set firewall.fullconenat.type=script
+	set firewall.fullconenat.path=/usr/share/fullconenat/firewall.include
+	set firewall.fullconenat.family=any
+	set firewall.fullconenat.reload=1
 	commit firewall
 EOF
