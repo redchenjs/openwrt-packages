@@ -44,7 +44,7 @@ define Package/vlmcsd/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/vlmcsd.init $(1)/etc/init.d/vlmcsd
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/vlmcsd.defaults $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/vlmcsd.defaults $(1)/etc/uci-defaults/
 endef
 
 $(eval $(call BuildPackage,vlmcsd))
