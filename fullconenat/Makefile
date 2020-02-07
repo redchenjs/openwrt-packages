@@ -33,7 +33,7 @@ define Package/iptables-mod-fullconenat/install
 	$(INSTALL_DIR) $(1)/usr/share/fullconenat
 	$(INSTALL_DATA) ./files/firewall.include $(1)/usr/share/fullconenat
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/fullconenat.defaults $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/fullconenat.defaults $(1)/etc/uci-defaults/
 endef
 
 define Package/iptables-mod-fullconenat/prerm
