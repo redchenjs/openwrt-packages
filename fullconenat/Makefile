@@ -30,8 +30,6 @@ endef
 define Package/iptables-mod-fullconenat/install
 	$(INSTALL_DIR) $(1)/usr/lib/iptables
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libipt_FULLCONENAT.so $(1)/usr/lib/iptables
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) ./files/firewall.fullconenat $(1)/etc
 	$(INSTALL_DIR) $(1)/usr/share/fullconenat
 	$(INSTALL_DATA) ./files/firewall.include $(1)/usr/share/fullconenat
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
