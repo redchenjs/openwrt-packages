@@ -36,7 +36,7 @@ define Package/alsa-plugins-pulse/install
 	$(INSTALL_DIR) $(1)/usr/share/alsa/alsa.conf.d
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/alsa/alsa.conf.d/50-pulseaudio.conf $(1)/usr/share/alsa/alsa.conf.d/
 	$(INSTALL_DIR) $(1)/etc/alsa/conf.d
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/alsa/conf.d/50-pulseaudio.conf $(1)/etc/alsa/conf.d/
+	$(LN) /usr/share/alsa/alsa.conf.d/50-pulseaudio.conf $(1)/etc/alsa/conf.d/
 endef
 
 $(eval $(call BuildPackage,alsa-plugins-pulse))
