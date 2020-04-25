@@ -64,8 +64,7 @@ define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C "$(LINUX_DIR)" \
         CROSS_COMPILE="$(TARGET_CROSS)" \
         ARCH="$(LINUX_KARCH)" \
-        SUBDIRS="$(PKG_BUILD_DIR)" \
-        EXTRA_CFLAGS="$(BUILDFLAGS)" \
+        M="$(PKG_BUILD_DIR)" \
         modules
 	$(call Build/Compile/Default)
 endef
