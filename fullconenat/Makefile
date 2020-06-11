@@ -51,6 +51,7 @@ define KernelPackage/ipt-fullconenat
 	MAINTAINER:=Chion Tang <tech@chionlab.moe>
 	KCONFIG:=CONFIG_NF_CONNTRACK_EVENTS=y CONFIG_NF_CONNTRACK_CHAIN_EVENTS=y
 	FILES:=$(PKG_BUILD_DIR)/xt_FULLCONENAT.ko
+	AUTOLOAD:=$(call AutoProbe,xt_FULLCONENAT)
 endef
 
 include $(INCLUDE_DIR)/kernel-defaults.mk
