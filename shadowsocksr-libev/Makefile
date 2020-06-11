@@ -28,14 +28,18 @@ define Package/shadowsocksr-libev/Default
 	SUBMENU:=Web Servers/Proxies
 	TITLE:=shadowsocksr-libev ssr-$(1)
 	URL:=https://github.com/shadowsocksrr/shadowsocksr-libev
-	DEPENDS:=+libev +libopenssl +libpthread +libpcre
+	DEPENDS:=+libev +libopenssl +libpthread +libpcre $(DEPENDS_$(1))
   endef
 
   define Package/shadowsocksr-libev-ssr-$(1)/install
 	$$(INSTALL_DIR) $$(1)/usr/bin
 	$$(INSTALL_BIN) $$(PKG_INSTALL_DIR)/usr/bin/ss-$(1) $$(1)/usr/bin/ssr-$(1)
+	$(INSTALL_$(1))
   endef
 endef
+
+DEPENDS_redir = +ip +ipset +iptables-mod-tproxy +resolveip
+INSTALL_redir = $$(INSTALL_BIN) ./files/ss-rules $$(1)/usr/bin/ssr-rules
 
 SHADOWSOCKSR_COMPONENTS:=local redir
 define shadowsocksr-libev/templates
