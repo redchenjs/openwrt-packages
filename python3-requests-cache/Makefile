@@ -23,7 +23,6 @@ define Package/python3-requests-cache
 	SUBMENU:=Python
 	TITLE:=python3-requests-cache
 	DEPENDS:=+python3-requests
-	VARIANT:=python3
 endef
 
 $(eval $(call Py3Package,python3-requests-cache))

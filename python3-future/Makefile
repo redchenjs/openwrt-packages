@@ -11,6 +11,8 @@ PKG_MAINTAINER:=
 PKG_LICENSE:=
 PKG_LICENSE_FILES:=
 
+PKG_BUILD_DEPENDS:=python3
+
 PYTHON_DIR:=$(TOPDIR)/feeds/packages/lang/python
 
 include $(PYTHON_DIR)/pypi.mk
@@ -22,7 +24,6 @@ define Package/python3-future
 	CATEGORY:=Languages
 	SUBMENU:=Python
 	TITLE:=python3-future
-	VARIANT:=python3
 endef
 
 $(eval $(call Py3Package,python3-future))
