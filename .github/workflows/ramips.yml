@@ -1,9 +1,9 @@
-name: ipq40xx
+name: ramips
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: 00 20 * * *
+    - cron: 00 16 * * *
 
 jobs:
   build:
@@ -12,12 +12,12 @@ jobs:
       - name: Set environment variables
         shell: bash {0}
         run: |
-          echo "TARGET=ipq40xx" >> $GITHUB_ENV
-          echo "CONFIG=GL-B1300.config" >> $GITHUB_ENV
+          echo "TARGET_NAME=ramips" >> $GITHUB_ENV
+          echo "TARGET_CONF=Newifi-D2.config" >> $GITHUB_ENV
       - name: Get latest release version
         shell: bash {0}
         run: |
-          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/tags | grep '".*-${{ env.TARGET }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/tags | grep '".*-${{ env.TARGET_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
       - name: Checkout OpenWrt repository
         uses: actions/checkout@v2
         with:
@@ -25,13 +25,13 @@ jobs:
       - name: Get latest Kernel version
         shell: bash {0}
         run: |
-          KERNEL_VERSION=$(cat target/linux/${{ env.TARGET }}/Makefile | grep KERNEL_PATCHVER | sed -r 's|.*([0-9]+.[0-9]+)$|\1|')
+          KERNEL_VERSION=$(cat target/linux/${{ env.TARGET_NAME }}/Makefile | grep KERNEL_PATCHVER | sed -r 's|.*([0-9]+.[0-9]+)$|\1|')
           LINUX_VERSION=$(cat include/kernel-version.mk | grep LINUX_VERSION-$KERNEL_VERSION | sed -r 's|.*\.([0-9]+)$|\1|')
           echo "KERNEL_VERSION=$KERNEL_VERSION.$LINUX_VERSION" >> $GITHUB_ENV
       - name: Compare release versions
         shell: bash {0}
         run: |
-          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.TARGET }}" == "${{ env.RELEASE_VERSION }}" ]]; then
+          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
             echo "LATEST_VERSION=1" >> $GITHUB_ENV
           else
             echo "LATEST_VERSION=0" >> $GITHUB_ENV
@@ -40,18 +40,25 @@ jobs:
         if: env.LATEST_VERSION == 0
         shell: bash {0}
         run: |
+          sudo apt update
+          sudo apt install build-essential ccache ecj fastjar file g++ gawk \
+          gettext git java-propose-classpath libelf-dev libncurses5-dev \
+          libncursesw5-dev libssl-dev python python2.7-dev python3 unzip wget \
+          python3-distutils python3-setuptools rsync subversion swig time \
+          xsltproc zlib1g-dev
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/3rd
-          cp package/3rd/${{ env.CONFIG }} .config
+          cp package/3rd/${{ env.TARGET_CONF }} .config
           make defconfig
+          make download
           make -j9 V=s
       - name: Prepare artifacts
         if: env.LATEST_VERSION == 0
         shell: bash {0}
         run: |
           mkdir artifacts
-          cp bin/targets/${{ env.TARGET }}/*/*.bin artifacts/
+          cp bin/targets/${{ env.TARGET_NAME }}/*/*.bin artifacts/
       - name: Create release
         if: env.LATEST_VERSION == 0
         id: create_release
@@ -59,8 +66,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.TARGET }}
-          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.TARGET }}
+          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}
+          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}
           draft: false
           prerelease: false
       - name: Upload release assets
