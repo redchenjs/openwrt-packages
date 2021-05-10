@@ -3,7 +3,7 @@ name: ipq40xx
 on:
   workflow_dispatch:
   schedule:
-    - cron: 00 16 * * *
+    - cron: 00 09 * * *
 
 jobs:
   build:
