@@ -50,7 +50,7 @@ jobs:
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/3rd
           cp package/3rd/${{ env.TARGET_CONF }} .config
-          cp package/3rd/linux target/
+          cp -r package/3rd/linux target/
           make defconfig
           make download
           make -j9 V=s
