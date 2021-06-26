@@ -1,4 +1,4 @@
-name: ipq40xx
+name: mt7621
 
 on:
   workflow_dispatch:
@@ -12,11 +12,12 @@ jobs:
       - name: Set environment variables
         shell: bash {0}
         run: |
-          echo "TARGET_NAME=ipq40xx" >> $GITHUB_ENV
+          echo "TARGET_NAME=ramips" >> $GITHUB_ENV
+          echo "DEVICE_NAME=mt7621" >> $GITHUB_ENV
       - name: Get latest release version
         shell: bash {0}
         run: |
-          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/tags | grep '".*-${{ env.TARGET_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/tags | grep '".*-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
       - name: Checkout OpenWrt repository
         uses: actions/checkout@v2
         with:
@@ -30,7 +31,7 @@ jobs:
       - name: Compare release versions
         shell: bash {0}
         run: |
-          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
+          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
             echo "LATEST_VERSION=1" >> $GITHUB_ENV
           else
             echo "LATEST_VERSION=0" >> $GITHUB_ENV
@@ -49,7 +50,7 @@ jobs:
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/3rd
           git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
-          cp package/3rd/${{ env.TARGET_NAME }}.config .config
+          cp package/3rd/${{ env.DEVICE_NAME }}.config .config
           cp -r package/3rd/linux target/
           make defconfig
           make download
@@ -70,8 +71,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}
-          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}
+          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}
+          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}
           draft: false
           prerelease: false
       - name: Upload release assets
