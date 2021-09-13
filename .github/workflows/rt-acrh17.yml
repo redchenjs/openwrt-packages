@@ -49,7 +49,6 @@ jobs:
           ./scripts/feeds install -a
           curl https://raw.githubusercontent.com/redchenjs/openwrt-packages/main/${{ env.TARGET_NAME }}.config > .config
           git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
-          cp -r package/3rd/linux target/
           make defconfig
           make download
           make -j9 V=s
