@@ -52,10 +52,9 @@ jobs:
           git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
           cp package/3rd/mt762x-wm8960/examples/*.dts* target/linux/ramips/dts/
           cp package/3rd/${{ env.DEVICE_NAME }}.config .config
-          cp -r package/3rd/linux target/
           make defconfig
           make download
-          make -j9 V=s
+          make -j$(nproc) V=s
       - name: Prepare artifacts
         if: env.LATEST_VERSION == 0
         shell: bash {0}
