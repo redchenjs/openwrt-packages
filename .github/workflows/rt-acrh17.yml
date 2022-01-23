@@ -51,7 +51,7 @@ jobs:
           git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
           make defconfig
           make download
-          make -j9 V=s
+          make -j$(nproc) V=s
       - name: Prepare artifacts
         if: env.LATEST_VERSION == 0
         shell: bash {0}
