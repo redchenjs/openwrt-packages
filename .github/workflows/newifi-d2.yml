@@ -1,4 +1,4 @@
-name: rt-acrh17
+name: newifi-d2
 
 on:
   workflow_dispatch:
@@ -12,8 +12,8 @@ jobs:
       - name: Set environment variables
         shell: bash {0}
         run: |
-          echo "TARGET_NAME=ipq40xx" >> $GITHUB_ENV
-          echo "DEVICE_NAME=rt-acrh17" >> $GITHUB_ENV
+          echo "TARGET_NAME=ramips" >> $GITHUB_ENV
+          echo "DEVICE_NAME=newifi-d2" >> $GITHUB_ENV
       - name: Get latest release version
         shell: bash {0}
         run: |
