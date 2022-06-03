@@ -17,7 +17,7 @@ jobs:
       - name: Get latest release version
         shell: bash {0}
         run: |
-          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/tags | grep '".*-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/releases | jq ".[] | .tag_name" | grep '".*-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
       - name: Checkout OpenWrt repository
         uses: actions/checkout@v2
         with:
