@@ -31,7 +31,7 @@ jobs:
       - name: Compare release versions
         shell: bash {0}
         run: |
-          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.TARGET_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
+          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
             echo "LATEST_VERSION=1" >> $GITHUB_ENV
           else
             echo "LATEST_VERSION=0" >> $GITHUB_ENV
@@ -50,7 +50,7 @@ jobs:
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/3rd
           git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
-          cp package/3rd/${{ env.TARGET_NAME }}.config .config
+          cp package/3rd/${{ env.DEVICE_NAME }}.config .config
           cp -r package/3rd/linux target/
           make defconfig
           make download
