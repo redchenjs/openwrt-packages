@@ -48,7 +48,8 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/3rd
-          git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
+          git clone https://github.com/kuoruan/openwrt-v2ray.git package/openwrt-v2ray
+          git clone https://github.com/kuoruan/openwrt-upx.git package/openwrt-upx
           cp package/3rd/${{ env.TARGET_NAME }}.config .config
           cp -r package/3rd/linux target/
           make defconfig

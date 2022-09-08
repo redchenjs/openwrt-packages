@@ -49,7 +49,8 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           curl https://raw.githubusercontent.com/redchenjs/openwrt-packages/main/${{ env.DEVICE_NAME }}.config > .config
-          git clone https://github.com/kuoruan/openwrt-v2ray.git package/v2ray-core
+          git clone https://github.com/kuoruan/openwrt-v2ray.git package/openwrt-v2ray
+          git clone https://github.com/kuoruan/openwrt-upx.git package/openwrt-upx
           make defconfig
           make download
           make -j$(nproc) V=s
