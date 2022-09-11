@@ -49,6 +49,8 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           git clone https://github.com/openwrt/packages.git package/openwrt-packages
+          rm -rf feeds/packages/lang/golang
+          mv package/openwrt-packages/lang/golang feeds/packages/lang/
           mv package/openwrt-packages/net/v2ray-core package/
           rm -rf package/openwrt-packages
           sed "s|lang/golang/golang-package.mk|feeds/packages/lang/golang/golang-package.mk|g" -i package/v2ray-core/Makefile
