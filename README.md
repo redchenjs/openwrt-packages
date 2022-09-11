@@ -10,6 +10,6 @@ git clone --recursive https://github.com/redchenjs/openwrt-packages.git package/
 ## Update an existing repository
 
 ```
-cd package/3rd
+cd package/openwrt-packages
 git pull && git submodule update --init --recursive
 ```
