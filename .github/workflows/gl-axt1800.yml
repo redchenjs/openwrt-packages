@@ -70,6 +70,9 @@ jobs:
           for file in bin/targets/${{ env.TARGET_NAME }}/*/*; do
             sudo mv $file artifacts/
           done
+          cd artifacts
+          sudo tar -czf packages.tar.gz packages/
+          sudo rm -rf packages/
       - name: Create release
         if: env.LATEST_VERSION == 0
         id: create_release
