@@ -1,4 +1,4 @@
-name: ipq40xx
+name: openwrt-ipq40xx
 
 on:
   workflow_dispatch:
@@ -14,10 +14,11 @@ jobs:
         run: |
           echo "TARGET_NAME=ipq40xx" >> $GITHUB_ENV
           echo "DEVICE_NAME=ipq40xx" >> $GITHUB_ENV
+          echo "OPENWRT_REL=openwrt" >> $GITHUB_ENV
       - name: Get latest release version
         shell: bash {0}
         run: |
-          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/releases | jq ".[] | .tag_name" | grep '".*-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/releases | jq ".[] | .tag_name" | grep '".*-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
       - name: Checkout OpenWrt repository
         uses: actions/checkout@v2
         with:
@@ -31,7 +32,7 @@ jobs:
       - name: Compare release versions
         shell: bash {0}
         run: |
-          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
+          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
             echo "LATEST_VERSION=1" >> $GITHUB_ENV
           else
             echo "LATEST_VERSION=0" >> $GITHUB_ENV
@@ -49,7 +50,7 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/openwrt-packages
-          cp package/openwrt-packages/${{ env.DEVICE_NAME }}.config .config
+          cp package/openwrt-packages/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config .config
           cp -r package/openwrt-packages/linux target/
           make defconfig
           make download
@@ -72,8 +73,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}
-          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}
+          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}
+          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}
           draft: false
           prerelease: false
       - name: Upload release assets

@@ -1,4 +1,4 @@
-name: mt76x8
+name: lean-ipq60xx
 
 on:
   workflow_dispatch:
@@ -12,26 +12,27 @@ jobs:
       - name: Set environment variables
         shell: bash {0}
         run: |
-          echo "TARGET_NAME=ramips" >> $GITHUB_ENV
-          echo "DEVICE_NAME=mt76x8" >> $GITHUB_ENV
+          echo "TARGET_NAME=ipq60xx" >> $GITHUB_ENV
+          echo "DEVICE_NAME=ipq60xx" >> $GITHUB_ENV
+          echo "OPENWRT_REL=lean" >> $GITHUB_ENV
       - name: Get latest release version
         shell: bash {0}
         run: |
-          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/releases | jq ".[] | .tag_name" | grep '".*-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$(curl -s -L https://api.github.com/repos/redchenjs/openwrt-packages/releases | jq ".[] | .tag_name" | grep '".*-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}"' | head -n 1 | sed -r 's|.*"(.*)".*|\1|g')" >> $GITHUB_ENV
       - name: Checkout OpenWrt repository
         uses: actions/checkout@v2
         with:
-          repository: 'openwrt/openwrt'
+          repository: 'coolsnowwolf/openwrt-gl-ax1800'
       - name: Get latest Kernel version
         shell: bash {0}
         run: |
           KERNEL_VERSION=$(cat target/linux/${{ env.TARGET_NAME }}/Makefile | grep KERNEL_PATCHVER | sed -r 's|.*([0-9]+.[0-9]+)$|\1|')
-          LINUX_VERSION=$(cat include/kernel-$KERNEL_VERSION | grep LINUX_VERSION-$KERNEL_VERSION | sed -r 's|.*(\.[0-9]+)$|\1|')
+          LINUX_VERSION=$(cat include/kernel-version.mk | grep LINUX_VERSION-$KERNEL_VERSION | sed -r 's|.*(\.[0-9]+)$|\1|')
           echo "KERNEL_VERSION=$KERNEL_VERSION$LINUX_VERSION" >> $GITHUB_ENV
       - name: Compare release versions
         shell: bash {0}
         run: |
-          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
+          if [[ "v${{ env.KERNEL_VERSION }}-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}" == "${{ env.RELEASE_VERSION }}" ]]; then
             echo "LATEST_VERSION=1" >> $GITHUB_ENV
           else
             echo "LATEST_VERSION=0" >> $GITHUB_ENV
@@ -48,10 +49,17 @@ jobs:
           xsltproc zlib1g-dev
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          git clone https://github.com/openwrt/packages.git package/openwrt-packages
+          rm -rf feeds/packages/lang/golang
+          mv package/openwrt-packages/lang/golang feeds/packages/lang/
+          mv package/openwrt-packages/net/v2ray-core package/
+          rm -rf package/openwrt-packages
+          sed "s|lang/golang/golang-package.mk|feeds/packages/lang/golang/golang-package.mk|g" -i package/v2ray-core/Makefile
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/openwrt-packages
-          cp package/openwrt-packages/mt762x-wm8960/examples/*.dts* target/linux/ramips/dts/
-          cp package/openwrt-packages/${{ env.DEVICE_NAME }}.config .config
+          cp package/openwrt-packages/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config .config
           cp -r package/openwrt-packages/linux target/
+          mv package/openwrt-packages/vlmcsd package/
+          rm -rf package/openwrt-packages
           make defconfig
           make download
           make -j$(nproc) V=s
@@ -73,8 +81,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}
-          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.DEVICE_NAME }}
+          tag_name: v${{ env.KERNEL_VERSION }}-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}
+          release_name: Release v${{ env.KERNEL_VERSION }}-${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}
           draft: false
           prerelease: false
       - name: Upload release assets
