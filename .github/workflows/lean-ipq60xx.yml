@@ -57,7 +57,6 @@ jobs:
           sed "s|lang/golang/golang-package.mk|feeds/packages/lang/golang/golang-package.mk|g" -i package/v2ray-core/Makefile
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/openwrt-packages
           cp package/openwrt-packages/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config .config
-          cp -r package/openwrt-packages/linux target/
           mv package/openwrt-packages/vlmcsd package/
           rm -rf package/openwrt-packages
           make defconfig

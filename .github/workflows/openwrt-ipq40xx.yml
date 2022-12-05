@@ -51,7 +51,7 @@ jobs:
           ./scripts/feeds install -a
           git clone --recursive https://github.com/redchenjs/openwrt-packages package/openwrt-packages
           cp package/openwrt-packages/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config .config
-          cp -r package/openwrt-packages/linux target/
+          cp -rL package/openwrt-packages/linux target/
           make defconfig
           make download
           make -j$(nproc) V=s
