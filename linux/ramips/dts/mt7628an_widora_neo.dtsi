@@ -1,1 +1,235 @@
-../../../mt762x-wm8960/examples/mt7628an_widora_neo.dtsi
+#include "mt7628an.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/ {
+	compatible = "widora,neo", "mediatek,mt7628an-soc";
+
+	aliases {
+		led-boot = &led_wifi;
+		led-failsafe = &led_wifi;
+		led-running = &led_wifi;
+		led-upgrade = &led_wifi;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_wifi: wifi {
+			label = "orange:wifi";
+			gpios = <&wgpio 0 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		wps {
+			label = "reset";
+			gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+	};
+
+	wgpio: gpio-wifi {
+		compatible = "mediatek,gpio-wifi";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
+&spi0 {
+	status = "okay";
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi_pins>, <&spi_cs1_pins>;
+
+	flash0: flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
+			};
+
+			factory: partition@40000 {
+				label = "factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+			};
+
+			firmware: partition@50000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				/* reg property is set based on flash size in DTS files */
+			};
+		};
+	};
+
+	spidev@1 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "rohm,dh2228fv";
+		reg = <1>;
+		spi-max-frequency = <40000000>;
+	};
+};
+
+&state_default {
+	gpio {
+		groups = "gpio";
+		function = "gpio";
+	};
+
+	perst {
+		groups = "perst";
+		function = "gpio";
+	};
+
+	refclk {
+		groups = "refclk";
+		function = "refclk";
+	};
+
+	i2s {
+		groups = "i2s";
+		function = "i2s";
+	};
+
+	spis {
+		groups = "spis";
+		function = "gpio";
+	};
+
+	wled_kn {
+		groups = "wled_kn";
+		function = "gpio";
+	};
+
+	wled_an {
+		groups = "wled_an";
+		function = "wled_an";
+	};
+
+	wdt {
+		groups = "wdt";
+		function = "gpio";
+	};
+};
+
+&i2c {
+	status = "okay";
+
+	codec: wm8960@1a {
+		#sound-dai-cells = <0>;
+
+		compatible = "wlf,wm8960";
+		reg = <0x1a>;
+		wlf,shared-lrclk;
+		wlf,hp-cfg = <0 0 0>;
+		wlf,gpio-cfg = <1 0>;
+	};
+};
+
+&uart1 {
+	status = "okay";
+};
+
+&uart2 {
+	status = "okay";
+};
+
+&pwm {
+	status = "okay";
+};
+
+&ethernet {
+	nvmem-cells = <&macaddr_factory_28>;
+	nvmem-cell-names = "mac-address";
+};
+
+&sdhci {
+	status = "okay";
+	mediatek,cd-low;
+};
+
+&wmac {
+	status = "okay";
+
+	mediatek,mtd-eeprom = <&factory 0x0>;
+};
+
+&factory {
+	compatible = "nvmem-cells";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	macaddr_factory_28: macaddr@28 {
+		reg = <0x28 0x6>;
+	};
+};
+
+&i2s {
+	status = "okay";
+
+	#sound-dai-cells = <0>;
+};
+
+&gdma {
+	status = "okay";
+};
+
+/ {
+	sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "wm8960-hifi";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&dai_cpu>;
+		simple-audio-card,frame-master = <&dai_cpu>;
+		simple-audio-card,widgets =
+			"Microphone", "Microphone",
+			"Headphone", "Headphone",
+			"Speaker", "Speaker",
+			"Line", "Line In";
+		simple-audio-card,routing =
+			"Headphone", "HP_L",
+			"Headphone", "HP_R",
+			"Speaker", "SPK_LN",
+			"Speaker", "SPK_LP",
+			"Speaker", "SPK_RN",
+			"Speaker", "SPK_RP",
+			"Microphone", "MICB",
+			"LINPUT1", "Microphone",
+			"RINPUT1", "Microphone";
+
+		dai_cpu: simple-audio-card,cpu {
+			sound-dai = <&i2s>;
+		};
+
+		dai_codec: simple-audio-card,codec {
+			sound-dai = <&codec>;
+			system-clock-frequency = <12000000>;
+		};
+	};
+};
