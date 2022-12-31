@@ -22,12 +22,12 @@ jobs:
       - name: Checkout OpenWrt repository
         uses: actions/checkout@v2
         with:
-          repository: 'coolsnowwolf/openwrt-gl-ax1800'
+          repository: 'coolsnowwolf/lede'
       - name: Get latest Kernel version
         shell: bash {0}
         run: |
           KERNEL_VERSION=$(cat target/linux/${{ env.TARGET_NAME }}/Makefile | grep KERNEL_PATCHVER | sed -r 's|.*([0-9]+.[0-9]+)$|\1|')
-          LINUX_VERSION=$(cat include/kernel-version.mk | grep LINUX_VERSION-$KERNEL_VERSION | sed -r 's|.*(\.[0-9]+)$|\1|')
+          LINUX_VERSION=$(cat include/kernel-$KERNEL_VERSION | grep LINUX_VERSION-$KERNEL_VERSION | sed -r 's|.*(\.[0-9]+)$|\1|')
           echo "KERNEL_VERSION=$KERNEL_VERSION$LINUX_VERSION" >> $GITHUB_ENV
       - name: Compare release versions
         shell: bash {0}
@@ -50,15 +50,10 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           git clone https://github.com/openwrt/packages.git package/openwrt-packages
-          rm -rf feeds/packages/lang/golang
-          mv package/openwrt-packages/lang/golang feeds/packages/lang/
           mv package/openwrt-packages/net/v2ray-core package/
           rm -rf package/openwrt-packages
           sed "s|lang/golang/golang-package.mk|feeds/packages/lang/golang/golang-package.mk|g" -i package/v2ray-core/Makefile
-          git clone --recursive https://github.com/redchenjs/openwrt-packages package/openwrt-packages
-          cp package/openwrt-packages/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config .config
-          mv package/openwrt-packages/vlmcsd package/
-          rm -rf package/openwrt-packages
+          curl https://raw.githubusercontent.com/redchenjs/openwrt-packages/main/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config > .config
           make defconfig
           make download
           make -j$(nproc) V=s
