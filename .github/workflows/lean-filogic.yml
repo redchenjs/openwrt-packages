@@ -49,10 +49,8 @@ jobs:
           xsltproc zlib1g-dev
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          git clone https://github.com/openwrt/packages.git package/openwrt-packages
-          mv package/openwrt-packages/net/v2ray-core package/
-          rm -rf package/openwrt-packages
-          sed "s|lang/golang/golang-package.mk|feeds/packages/lang/golang/golang-package.mk|g" -i package/v2ray-core/Makefile
+          git clone https://github.com/openwrt/packages.git openwrt-packages
+          ln -s ../openwrt-packages/net/v2ray-core package/v2ray-core
           curl https://raw.githubusercontent.com/redchenjs/openwrt-packages/main/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config > .config
           make defconfig
           make download
@@ -87,3 +85,10 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           targets: artifacts/*
+      - name: Delete older releases
+        uses: dev-drprasad/delete-older-releases@v0.3.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          keep_latest: 50
+          delete_tags: true
