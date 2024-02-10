@@ -49,8 +49,6 @@ jobs:
           xsltproc zlib1g-dev
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          git clone https://github.com/openwrt/packages.git openwrt-packages
-          ln -s ../openwrt-packages/net/v2ray-core package/v2ray-core
           curl https://raw.githubusercontent.com/redchenjs/openwrt-packages/main/${{ env.OPENWRT_REL }}-${{ env.DEVICE_NAME }}.config > .config
           make defconfig
           make download
